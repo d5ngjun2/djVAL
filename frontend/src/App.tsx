@@ -1,51 +1,68 @@
-import { useEffect } from 'react';
 import { useRiotStore } from './store/useRiotStore';
+import SearchBar from './components/SearchBar';
+import MatchCard from './components/MatchCard';
 
 function App() {
-  const { content, isLoading, error, fetchContent } = useRiotStore();
-
-  useEffect(() => {
-    // 최초 렌더링 시 백엔드에서 데이터 로드 (연동 테스트)
-    fetchContent();
-  }, [fetchContent]);
+  const { playerInfo, recentMatches, error } = useRiotStore();
 
   return (
-    <div className="animate-fade-in" style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem 1rem', maxWidth: '800px', margin: '0 auto', minHeight: '100vh' }}>
       <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '3rem', letterSpacing: '2px' }}>VALORANT TRACKER</h1>
-        <p style={{ color: 'var(--valo-red)', fontWeight: '600' }}>프리미엄 전적 검색 및 통계 플랫폼</p>
+        <h1 style={{ fontSize: '3rem', letterSpacing: '2px', textShadow: '0 0 20px rgba(255, 70, 85, 0.4)' }}>
+          VALORANT <span style={{ color: 'var(--valo-red)' }}>TRACKER</span>
+        </h1>
+        <p style={{ color: 'var(--valo-light-gray)', fontWeight: '500', marginBottom: '2rem' }}>
+          전적을 검색하고 싶은 플레이어의 닉네임과 태그를 입력하세요
+        </p>
+        
+        <SearchBar />
       </header>
 
       <main>
-        <section className="glass-panel" style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <h2>Riot API 연동 상태</h2>
-          
-          {isLoading && <p>데이터를 불러오는 중입니다...</p>}
-          
-          {error && (
-            <div style={{ padding: '1rem', borderLeft: '4px solid var(--valo-red)', backgroundColor: 'rgba(255, 70, 85, 0.1)', marginTop: '1rem' }}>
-              <h3 style={{ color: 'var(--valo-red)', marginTop: 0 }}>오류 발생</h3>
-              <p>{error}</p>
-              <p style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '0.5rem' }}>
-                * 확인사항: 백엔드 서버가 실행 중인가요? backend/.env 파일에 RIOT_API_KEY가 올바르게 입력되었나요?
-              </p>
+        {error && (
+          <div className="glass-panel animate-fade-in" style={{ borderColor: 'var(--valo-red)', marginBottom: '2rem' }}>
+            <h3 style={{ color: 'var(--valo-red)', marginTop: 0 }}>오류 발생</h3>
+            <p>{error}</p>
+          </div>
+        )}
+
+        {playerInfo && (
+          <div className="animate-fade-in">
+            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <div style={{ 
+                width: '60px', height: '60px', 
+                borderRadius: 'var(--radius-lg)', 
+                background: 'var(--glass-bg)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '1px solid var(--glass-border)'
+              }}>
+                <span style={{ fontSize: '1.5rem' }}>🎮</span>
+              </div>
+              <div>
+                <h2 style={{ margin: 0, fontSize: '1.8rem' }}>
+                  {playerInfo.gameName} <span style={{ color: 'var(--valo-light-gray)', fontSize: '1.2rem', fontWeight: 'normal' }}>#{playerInfo.tagLine}</span>
+                </h2>
+                <span style={{ color: 'var(--valo-red)', fontSize: '0.9rem' }}>레벨 정보는 추가 API 연동 필요</span>
+              </div>
             </div>
-          )}
-          
-          {content && (
-            <div style={{ marginTop: '1rem' }}>
-              <p style={{ color: 'var(--valo-white)' }}>
-                ✅ API 연동 성공!
-              </p>
-              <p style={{ fontSize: '0.9rem', color: 'var(--valo-light-gray)' }}>
-                데이터 버전: {content.version}
-              </p>
-              <button className="btn-primary" onClick={fetchContent} style={{ marginTop: '1rem' }}>
-                데이터 다시 불러오기
-              </button>
-            </div>
-          )}
-        </section>
+
+            <h3 style={{ marginBottom: '1rem', color: 'var(--valo-light-gray)' }}>최근 5경기 전적</h3>
+            
+            {!recentMatches && !error && (
+              <p style={{ color: 'var(--valo-light-gray)', fontStyle: 'italic' }}>전적 데이터를 불러오는 중...</p>
+            )}
+
+            {recentMatches && recentMatches.length === 0 && (
+              <div className="glass-panel text-center">
+                <p>최근 플레이한 전적이 없습니다.</p>
+              </div>
+            )}
+
+            {recentMatches && recentMatches.map((match: any, idx: number) => (
+              <MatchCard key={match.matchInfo?.matchId || idx} match={match} puuid={playerInfo.puuid} />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
