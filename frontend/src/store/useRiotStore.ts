@@ -38,22 +38,41 @@ export const useRiotStore = create<RiotState>((set, get) => ({
 
   searchPlayer: async (gameName: string, tagLine: string) => {
     set({ searchLoading: true, error: null, playerInfo: null, recentMatches: null });
+    
+    let puuid = '';
+    
+    // 1. 플레이어 PUUID 조회
     try {
-      // 1. 플레이어 PUUID 조회
       const accountRes = await axios.get(`${API_BASE_URL}/account/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`);
-      const puuid = accountRes.data.puuid;
-      
+      puuid = accountRes.data.puuid;
       set({ playerInfo: accountRes.data });
-
-      // 2. 최근 매치 상세 정보 조회
-      const matchesRes = await axios.get(`${API_BASE_URL}/matches/recent/${puuid}`);
-      set({ recentMatches: matchesRes.data.matches, searchLoading: false });
-      
     } catch (err: any) {
       set({ 
-        error: err.response?.data?.detail || err.message || '전적을 검색하는 중 오류가 발생했습니다. 닉네임과 태그를 확인해주세요.', 
+        error: err.response?.status === 404 ? '해당 닉네임과 태그를 가진 플레이어를 찾을 수 없습니다.' : '플레이어 정보를 검색하는 중 오류가 발생했습니다.', 
         searchLoading: false 
       });
+      return; // 계정을 못 찾으면 여기서 중단
+    }
+
+    // 2. 최근 매치 상세 정보 조회
+    try {
+      const matchesRes = await axios.get(`${API_BASE_URL}/matches/recent/${puuid}`);
+      set({ recentMatches: matchesRes.data.matches, searchLoading: false });
+    } catch (err: any) {
+      // 403 에러 처리 (API 키 권한 문제)
+      if (err.response?.status === 403) {
+        set({ 
+          error: '라이엇 API 권한 문제(403 Forbidden)로 매치 전적 데이터를 불러올 수 없습니다. 프로덕션 API 키가 필요합니다.', 
+          searchLoading: false,
+          recentMatches: []
+        });
+      } else {
+        set({ 
+          error: err.response?.data?.detail || '전적을 검색하는 중 오류가 발생했습니다.', 
+          searchLoading: false,
+          recentMatches: []
+        });
+      }
     }
   }
 }));
