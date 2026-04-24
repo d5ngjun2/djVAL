@@ -8,7 +8,7 @@
 /* Base Styles */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  color: var(--valo-white);
+  color: var(--valo-text-primary);
   margin-top: 0;
 }
 
@@ -20,6 +20,10 @@ a {
 
 a:hover {
   color: var(--valo-red-hover);
+}
+
+p {
+  color: var(--valo-text-secondary);
 }
 
 /* Premium UI Utilities */
@@ -34,8 +38,8 @@ a:hover {
 }
 
 .btn-primary {
-  background-color: var(--valo-red);
-  color: var(--valo-white);
+  background-color: var(--valo-text-primary); /* 진한 파란색 버튼 */
+  color: var(--valo-bg); /* 하얀색 텍스트 */
   border: none;
   padding: 12px 24px;
   font-size: 1rem;
@@ -48,9 +52,9 @@ a:hover {
 }
 
 .btn-primary:hover {
-  background-color: var(--valo-red-hover);
+  background-color: var(--valo-text-secondary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.4);
+  box-shadow: 0 4px 12px rgba(10, 25, 47, 0.2);
 }
 
 /* Animations */

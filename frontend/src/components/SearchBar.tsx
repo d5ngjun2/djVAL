@@ -33,19 +33,26 @@ export default function SearchBar() {
             width: '100%',
             padding: '14px 20px 14px 45px',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--glass-border)',
-            background: 'var(--valo-dark-gray)',
-            color: 'var(--valo-white)',
+            border: '2px solid var(--glass-border)',
+            background: '#ffffff',
+            color: 'var(--valo-text-primary)',
             fontSize: '1rem',
             outline: 'none',
-            transition: 'all var(--transition-fast)'
+            transition: 'all var(--transition-fast)',
+            boxShadow: 'inset 0 2px 4px rgba(10,25,47,0.02)'
           }}
-          onFocus={(e) => e.target.style.borderColor = 'var(--valo-red)'}
-          onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
+          onFocus={(e) => {
+            e.target.style.borderColor = 'var(--valo-text-primary)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(10,25,47,0.1)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--glass-border)';
+            e.target.style.boxShadow = 'inset 0 2px 4px rgba(10,25,47,0.02)';
+          }}
         />
         <Search 
           size={20} 
-          style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--valo-light-gray)' }} 
+          style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--valo-text-secondary)' }} 
         />
       </div>
       <button 
