@@ -1,0 +1,36 @@
+:root {
+  /* Valorant Brand Colors */
+  --valo-red: #ff4655;
+  --valo-red-hover: #ff5865;
+  --valo-dark: #111111;
+  --valo-dark-gray: #1f2326;
+  --valo-light-gray: #ece8e1;
+  --valo-white: #ffffff;
+  
+  /* Glassmorphism Variables */
+  --glass-bg: rgba(31, 35, 38, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
+  /* Typography */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+  
+  /* Spacing & Utilities */
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+  
+  --transition-fast: 0.2s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+}
+
+/* Dark Mode Default */
+body {
+  background-color: var(--valo-dark);
+  color: var(--valo-light-gray);
+  font-family: var(--font-main);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
